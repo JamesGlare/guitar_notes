@@ -171,7 +171,7 @@ impl Chord {
                     semitones: Chord::MAJOR_TWO_INTERVAL,
                 });
                 return Some(new_chord);
-            }else if Chord::all_contained_in(&[Chord::MAJOR_7_INTERVAL], &intervals) {
+            } else if Chord::all_contained_in(&[Chord::MAJOR_7_INTERVAL], &intervals) {
                 new_chord.type_ = ChordType::extended_triad {
                     t: t.clone(),
                     e: Extension::major_7,
@@ -224,7 +224,8 @@ impl Chord {
         }
     }
 
-    pub fn find_chord(notes: &Vec<Note>) -> Option<Chord> {
+    pub fn find_chord(notes: &Vec<Note>) -> Vec<Chord> {
+        let mut results: Vec<Chord> = Vec::new();
         for root in notes {
             let mut steps_to_root = vec![notes
                 .iter()
@@ -244,7 +245,7 @@ impl Chord {
                             .collect::<Vec<_>>();
                         match twotone.try_into().unwrap() {
                             Chord::FIVE_INTERVALS => {
-                                return Some(Chord::from_intervals(
+                                results.push(Chord::from_intervals(
                                     root.semitones,
                                     &Chord::FIVE_INTERVALS.to_vec(),
                                     ChordType::twotone { t: TwoTone::five },
@@ -259,8 +260,8 @@ impl Chord {
                             .map(|s| s.no_octaves().semitones)
                             .collect::<Vec<_>>();
                         let opt_chord = Chord::match_triad(root, &triad);
-                        if let Some(_) = opt_chord {
-                            return opt_chord;
+                        if let Some(chord) = opt_chord {
+                            results.push(chord);
                         }
                     }
                     4 => {/* TRIAD CHORD + some other tone */
@@ -278,7 +279,7 @@ impl Chord {
                             if let Some(extended_triad) =
                                 Chord::match_triad_extension(&partial_chord, &full_intervals)
                             {
-                                return Some(extended_triad);
+                                results.push(extended_triad);
                             }
                         }
                     }
@@ -286,7 +287,7 @@ impl Chord {
                 }
             }
         }
-        return None;
+        return results;
     }
 }
 #[test]
@@ -335,26 +336,26 @@ fn test_find_chord() {
         .map(|s| Note { semitones: *s + 0 })
         .collect::<Vec<_>>();
 
-    let chord1 = Chord::find_chord(&notes1).unwrap();
-    let chord2 = Chord::find_chord(&notes2).unwrap();
-    let chord3 = Chord::find_chord(&notes3).unwrap();
-    let chord4 = Chord::find_chord(&notes4).unwrap();
-    let chord5 = Chord::find_chord(&notes5).unwrap();
-    assert_eq!(chord1.type_, ChordType::triad { t: Triad::minor });
-    assert_eq!(chord2.type_, ChordType::triad { t: Triad::sus2 });
+    let chord1 = Chord::find_chord(&notes1);
+    let chord2 = Chord::find_chord(&notes2);
+    let chord3 = Chord::find_chord(&notes3);
+    let chord4 = Chord::find_chord(&notes4);
+    let chord5 = Chord::find_chord(&notes5);
+    assert_eq!(chord1[0].type_, ChordType::triad { t: Triad::minor });
+    assert_eq!(chord2[0].type_, ChordType::triad { t: Triad::sus2 });
     assert_eq!(
-        chord3.type_,
+        chord3[0].type_,
         ChordType::extended_triad {
             t: Triad::major,
             e: Extension::minor_7
         }
     );
     assert_eq!(
-        chord4.type_,
+        chord4[0].type_,
         ChordType::extended_triad {
             t: Triad::minor,
             e: Extension::add_major_9
         }
     );
-    assert_eq!(chord5.type_, ChordType::twotone { t: TwoTone::five });
+    assert_eq!(chord5[0].type_, ChordType::twotone { t: TwoTone::five });
 }

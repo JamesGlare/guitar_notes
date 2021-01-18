@@ -38,11 +38,14 @@ fn main() {
                     "I had trouble parsing some notes, are they in tab notation (e.g. E0, A13"
                 );
             }
-            let opt_chord = guitar_note::chord_from_tab_notation(&notes);
-            if let Some(chord) = opt_chord {
-                println!("Chord: {}", chord);
-            } else {
+            let chord_strings = guitar_note::chord_from_tab_notation(&notes);
+            if chord_strings.is_empty() {
                 println!("This is not a chord that I know.");
+            } else {
+                println!("Chord: {}", chord_strings[0]);
+                for (idx, chord_string) in chord_strings.iter().skip(1).enumerate() {
+                    println!("{}. inversion: {}", idx, chord_string);
+                } 
             }
         }
         None => {}

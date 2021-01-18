@@ -91,10 +91,10 @@ pub mod guitar_note {
         };
     }
 
-    pub fn chord_from_tab_notation(note_str: &Vec<String>) -> Option<String> {
+    pub fn chord_from_tab_notation(note_str: &Vec<String>) -> Vec<String> {
         let notes = parse_tab_notation(note_str);
-        let chord = Chord::find_chord(&notes)?;
-        return Some(chord.to_string());
+        let chords = Chord::find_chord(&notes);
+        return chords.iter().map(|c| c.to_string()).collect::<Vec<String>>();
     }
     
     
