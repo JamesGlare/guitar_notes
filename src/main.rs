@@ -42,9 +42,14 @@ fn main() {
             if chord_strings.is_empty() {
                 println!("This is not a chord that I know.");
             } else {
-                println!("Chord: {}", chord_strings[0]);
-                for (idx, chord_string) in chord_strings.iter().skip(1).enumerate() {
-                    println!("{}. inversion: {}", idx, chord_string);
+                for (idx, opt_chord_string) in chord_strings.iter().enumerate() {
+                    if let Some(chord_string) = opt_chord_string {
+                        if idx == 0 {
+                            println!("Chord: {}", chord_string);
+                        } else {
+                            println!("{}. inversion: {}", idx, chord_string);
+                        }
+                    }
                 } 
             }
         }

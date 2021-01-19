@@ -66,11 +66,11 @@ impl Chord {
         let mut result: Vec<Vec<Note>> = vec![];
         for i in 1..n_notes {
             let front = intervals.iter().take(n_notes - i).map(|s| *s);
-            let back = intervals.iter().rev().take(i).map(|s| Note::octave() - *s);
+            let back = intervals.iter().rev().take(i).map(|s|  *s - Note::octave());
             let inversion_intervals = back
                 .rev()
                 .chain(front)
-                .map(|s| s.regauge_if_negative())
+                .unique_by(|s| s.no_octaves())
                 .collect::<Vec<_>>();
             result.push(inversion_intervals);
         }
@@ -224,69 +224,65 @@ impl Chord {
         }
     }
 
-    pub fn find_chord(notes: &Vec<Note>) -> Vec<Chord> {
-        let mut results: Vec<Chord> = Vec::new();
-        for root in notes {
+    pub fn find_chord(notes: &Vec<Note>) -> Vec<Option<Chord>> {
+        let mut results: Vec<Option<Chord>> = Vec::new();
             let mut steps_to_root = vec![notes
                 .iter()
-                .map(|s| (*s - *root))
+                .map(|s| *s)               
                 .unique_by(|s1| s1.no_octaves()) // delete duplicate notes
                 .collect::<Vec<_>>()];
             let mut inversions = Chord::build_inversions(&steps_to_root[0]);
+
             steps_to_root.append(&mut inversions);
 
             for inversion in &mut steps_to_root {
-                inversion.sort();
+                let root = inversion.iter().min().unwrap();
+                let relative = inversion
+                                                .iter()
+                                                .map(|s| (*s - *root))
+                                                .collect::<Vec<_>>();
                 match inversion.len() as i32 {
                     2 => { /* Probably a POWER CHORD */
-                        let twotone = inversion
+                        let twotone = relative
                             .iter()
                             .map(|s| s.no_octaves().semitones)
                             .collect::<Vec<_>>();
-                        match twotone.try_into().unwrap() {
-                            Chord::FIVE_INTERVALS => {
-                                results.push(Chord::from_intervals(
-                                    root.semitones,
+                        if Chord::all_contained_in( &Chord::FIVE_INTERVALS, &twotone) {
+                            results.push(Some(Chord::from_intervals(
+                                    inversion[0].semitones,
                                     &Chord::FIVE_INTERVALS.to_vec(),
                                     ChordType::twotone { t: TwoTone::five },
-                                ));
+                                )));
                             }
-                            _ => {}
-                        }
-                    }
+                    },
                     3 => { /* TRIAD CHORD */
-                        let triad = inversion
+                        let triad = relative
                             .iter()
                             .map(|s| s.no_octaves().semitones)
                             .collect::<Vec<_>>();
-                        let opt_chord = Chord::match_triad(root, &triad);
-                        if let Some(chord) = opt_chord {
-                            results.push(chord);
-                        }
+                        let opt_chord = Chord::match_triad(&inversion[0], &triad);
+                        results.push(opt_chord);
                     }
                     4 => {/* TRIAD CHORD + some other tone */
-                        let intervals = inversion
+                        let intervals = relative
                             .iter()
                             .map(|s| s.no_octaves().semitones)
                             .collect::<Vec<_>>();
 
-                        let opt_chord = Chord::match_triad(root, &intervals);
+                        let opt_chord = Chord::match_triad(&inversion[0], &intervals);
                         if let Some(partial_chord) = opt_chord {
                             // in order to be able to differentiate a 2 from a 9
                             // we need to keep octave information
                             let full_intervals =
-                                inversion.iter().map(|s| s.semitones).collect::<Vec<_>>();
-                            if let Some(extended_triad) =
-                                Chord::match_triad_extension(&partial_chord, &full_intervals)
-                            {
-                                results.push(extended_triad);
-                            }
+                                relative.iter().map(|s| s.semitones).collect::<Vec<_>>();
+                            let opt_extended_triad=
+                                Chord::match_triad_extension(&partial_chord, &full_intervals);
+                            results.push(opt_extended_triad);
                         }
                     }
-                    _ => {}
+                    _ => {results.push(None);}
                 }
             }
-        }
         return results;
     }
 }
@@ -299,19 +295,40 @@ fn test_first_inversion() {
     let minor_inversions = Chord::build_inversions(&intervals);
     assert_eq!(
         minor_inversions[0],
-        vec![5, 0, 3]
+        vec![-5, 0, 3]
             .iter()
             .map(|s| Note { semitones: *s })
             .collect::<Vec<_>>()
     );
     assert_eq!(
         minor_inversions[1],
-        vec![9, 5, 0]
+        vec![-9, -5, 0]
             .iter()
             .map(|s| Note { semitones: *s })
             .collect::<Vec<_>>()
     );
     assert_eq!(minor_inversions.len(), 2);
+    // now build from inversion
+    let intervals2 = [5, 0, 3]
+        .iter()
+        .map(|s| Note { semitones: *s })
+        .collect::<Vec<_>>();
+    let inversion2 = Chord::build_inversions(&intervals2);
+    assert_eq!(
+        inversion2[0],
+        vec![-9, 5, 0]
+            .iter()
+            .map(|s| Note { semitones: *s })
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(
+        inversion2[1],
+        vec![-12, -9, 5]
+            .iter()
+            .map(|s| Note { semitones: *s })
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(inversion2.len(), 2);
 }
 #[test]
 fn test_find_chord() {
@@ -341,21 +358,21 @@ fn test_find_chord() {
     let chord3 = Chord::find_chord(&notes3);
     let chord4 = Chord::find_chord(&notes4);
     let chord5 = Chord::find_chord(&notes5);
-    assert_eq!(chord1[0].type_, ChordType::triad { t: Triad::minor });
-    assert_eq!(chord2[0].type_, ChordType::triad { t: Triad::sus2 });
+    assert_eq!(chord1[0].clone().unwrap().type_, ChordType::triad { t: Triad::minor });
+    assert_eq!(chord2[0].clone().unwrap().type_, ChordType::triad { t: Triad::sus2 });
     assert_eq!(
-        chord3[0].type_,
+        chord3[0].clone().unwrap().type_,
         ChordType::extended_triad {
             t: Triad::major,
             e: Extension::minor_7
         }
     );
     assert_eq!(
-        chord4[0].type_,
+        chord4[0].clone().unwrap().type_,
         ChordType::extended_triad {
             t: Triad::minor,
             e: Extension::add_major_9
         }
     );
-    assert_eq!(chord5[0].type_, ChordType::twotone { t: TwoTone::five });
+    assert_eq!(chord5[0].clone().unwrap().type_, ChordType::twotone { t: TwoTone::five });
 }

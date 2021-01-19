@@ -20,10 +20,13 @@ impl Note {
     }
     pub fn regauge_if_negative(&self) -> Note {
         if self.semitones < 0 {
-            return (Note::octave() - self.no_octaves()).no_octaves();
+            return self.regauge();
         } else {
             return *self;
         }
+    }
+    pub fn regauge(&self) -> Note {
+        return (Note::octave() - self.no_octaves()).no_octaves();
     }
     pub fn to_string(&self) -> &str {
         /* Returns string of raw note.
