@@ -31,7 +31,7 @@ impl Note {
     pub fn to_string(&self) -> &str {
         /* Returns string of raw note.
          */
-        let st = self.semitones % 12;
+        let st = (self.semitones % 12).abs();
         return Note::NAMES[st as usize];
     }
 
