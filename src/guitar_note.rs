@@ -141,7 +141,16 @@ pub mod guitar_note {
             .map(|x| pad_to_length(&x.to_string()))
             .collect::<Vec<_>>()
             .join("  ");
-        return "   ".to_owned() + &fret_numbers;
+        return " ".to_owned() + &fret_numbers;
+    }
+    pub fn print_fret_markers() -> String {
+        let fret_markers = vec![
+            "| ", "  ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "  ", ": ",
+         /*  0    1   2    3     4    5    6    7   8    9   10    11   12 */
+            "  ", "  ", "* ",  "  ",   "* ",  "  ",  "* ",  "  ", "* ",  "  ", "* ", "  " 
+         /*  13  14   15    16     17    18    19    20   21    22   23   24*/            
+        ].join("  ");
+        return " ".to_owned() + &fret_markers;
     }
     fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning) -> Vec<String> {
         let mut result: Vec<String> = vec![];
@@ -156,13 +165,13 @@ pub mod guitar_note {
         for base_note in tuning.get_basenotes().iter() {
             // for each string on guitar
             let frets = locate_on_string(notes, base_note);
-            let mut nut_string = base_note.to_string().to_string().to_uppercase();
+            let mut nut_string = String::from("");
 
             if let Some(note) = frets[0] {
                 let note_str = capitalize_if_root((*base_note + note).to_string());
-                nut_string = format!("{}| {}", nut_string, pad_to_length(&note_str));
+                nut_string = format!(" {}", pad_to_length(&note_str));
             } else {
-                nut_string += "| - ";
+                nut_string += " - ";
             }
             let mut fret_strings = vec![nut_string];
 

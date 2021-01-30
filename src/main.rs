@@ -1,5 +1,6 @@
 extern crate clap;
 use clap::{App, Arg};
+use guitar_note::guitar_note::print_fret_numbers;
 mod guitar_note;
 
 fn main() {
@@ -38,8 +39,10 @@ fn main() {
                     "I had trouble parsing some notes, are they in tab notation (e.g. E0, A13"
                 );
             }
-            let (chord_strings, fretboard) = guitar_note::chord_from_tab_notation(&notes);
             let fret_numbers = guitar_note::print_fret_numbers();
+            let fret_markers = guitar_note::print_fret_markers();
+            let (chord_strings, fretboard) = guitar_note::chord_from_tab_notation(&notes);
+
             if chord_strings.is_empty() {
                 println!("This is not a chord that I know.");
             } else {
@@ -58,20 +61,21 @@ fn main() {
             print!("\n");
             println!("{}", fretboard);
             print!("\n");
-            println!("{}", fret_numbers);
+            println!("{}", fret_markers);
         }
         None => {}
     }
     match matches.value_of("all_notes") {
         Some(note_name) => {
             let fret_numbers = guitar_note::print_fret_numbers();
+            let fret_markers = guitar_note::print_fret_markers();
             let opt_fretboard = guitar_note::all_notes_on_fretboard(note_name);
             if let Some(fretboard) = opt_fretboard {
                 println!("{}", fret_numbers);
                 print!("\n");
                 println!("{}", fretboard);
                 print!("\n");
-                println!("{}", fret_numbers);
+                println!("{}", fret_markers);
             } else {
                 println!("Sorry, I could not parse the note you want me to find.");
             }
@@ -81,6 +85,7 @@ fn main() {
     match matches.values_of("scale") {
         Some(mut vals) => {
             let fret_numbers = guitar_note::print_fret_numbers();
+            let fret_markers = guitar_note::print_fret_markers();
             let scale_name = &vals.nth(0).unwrap().to_lowercase()[..];
             let root_name = &vals.nth(0).unwrap().to_lowercase()[..];
             if let Some(result) = guitar_note::scale_on_fretboard(scale_name, root_name) {
@@ -91,7 +96,7 @@ fn main() {
                 print!("\n");
                 println!("{}", result.0);
                 print!("\n");
-                println!("{}", fret_numbers);
+                println!("{}", fret_markers);
             } else if let Some(result) = guitar_note::scale_on_fretboard(root_name, scale_name) {
                 println!("{}", result.2);
                 println!("{}", result.1);
@@ -100,7 +105,7 @@ fn main() {
                 print!("\n");
                 println!("{}", result.0);
                 print!("\n");
-                println!("{}", fret_numbers);
+                println!("{}", fret_markers);
             } else {
                 println!("Sorry, I could not parse scale and/or root input.");
             }
