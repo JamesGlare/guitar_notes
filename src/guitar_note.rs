@@ -90,16 +90,19 @@ pub mod guitar_note {
             0 => None,
         };
     }
-    pub fn chord_from_tab_notation(note_str: &Vec<String>) -> Vec<Option<String>> {
+    pub fn chord_from_tab_notation(note_str: &Vec<String>) -> (Vec<Option<String>>, String) {
         let notes = parse_tab_notation(note_str);
         let chords = Chord::find_chord(&notes);
-        return chords.iter().map(|opt_c| 
+        let inversions= chords.iter().map(|opt_c| 
                                  if let Some(c) = opt_c {
                                      Some(c.to_string())
                                 } else {
                                     None
                                 }
                             ).collect::<Vec<Option<String>>>();
+        let tuning = Tuning::eadgbe();
+        let fretboard = join_strings(&mut layout_on_fretboard(&notes, &tuning));
+        return (inversions, fretboard);
     }
     pub fn scale_on_fretboard(scale_name: &str, root: &str) -> Option<(String, String, String)> {
         // Interface
@@ -137,7 +140,7 @@ pub mod guitar_note {
         let fret_numbers = (0..24)
             .map(|x| pad_to_length(&x.to_string()))
             .collect::<Vec<_>>()
-            .join(" ");
+            .join("  ");
         return "   ".to_owned() + &fret_numbers;
     }
     fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning) -> Vec<String> {
@@ -172,7 +175,7 @@ pub mod guitar_note {
                     fret_strings.push(String::from("- "));
                 }
             }
-            result.push(fret_strings.join(" "));
+            result.push(fret_strings.join("  "));
         }
         return result;
     }

@@ -38,7 +38,8 @@ fn main() {
                     "I had trouble parsing some notes, are they in tab notation (e.g. E0, A13"
                 );
             }
-            let chord_strings = guitar_note::chord_from_tab_notation(&notes);
+            let (chord_strings, fretboard) = guitar_note::chord_from_tab_notation(&notes);
+            let fret_numbers = guitar_note::print_fret_numbers();
             if chord_strings.is_empty() {
                 println!("This is not a chord that I know.");
             } else {
@@ -52,17 +53,23 @@ fn main() {
                     }
                 } 
             }
+            // print the notes on the fretboard
+            println!("{}", fret_numbers);
+            print!("\n");
+            println!("{}", fretboard);
+            print!("\n");
+            println!("{}", fret_numbers);
         }
         None => {}
     }
     match matches.value_of("all_notes") {
         Some(note_name) => {
             let fret_numbers = guitar_note::print_fret_numbers();
-            let opt_result = guitar_note::all_notes_on_fretboard(note_name);
-            if let Some(result) = opt_result {
+            let opt_fretboard = guitar_note::all_notes_on_fretboard(note_name);
+            if let Some(fretboard) = opt_fretboard {
                 println!("{}", fret_numbers);
                 print!("\n");
-                println!("{}", result);
+                println!("{}", fretboard);
                 print!("\n");
                 println!("{}", fret_numbers);
             } else {
