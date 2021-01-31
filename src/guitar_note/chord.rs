@@ -161,6 +161,9 @@ impl Chord {
         };
         return format!("{}{}", self.notes[0].to_string().to_uppercase(), type_str);
     }
+    pub fn get_notes(&self) -> &Vec<Note> {
+        return &self.notes;
+    }
     fn from_intervals(root: Note, intervals: &Vec<Note>, type_: ChordType) -> Chord {
         let mut notes = intervals
             .iter()
@@ -591,7 +594,6 @@ impl Chord {
                     }
                 })
                 .collect::<Vec<_>>();
-            println!("{:?}", relative);
             match inversion.len() as i32 {
                 2 => {
                     /* Probably a POWER CHORD */

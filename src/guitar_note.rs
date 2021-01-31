@@ -100,8 +100,13 @@ pub mod guitar_note {
                                     None
                                 }
                             ).collect::<Vec<Option<String>>>();
-        let tuning = Tuning::eadgbe();
-        let fretboard = join_strings(&mut layout_on_fretboard(&notes, &tuning));
+        let opt_chord  = chords.into_iter().find_map(|x|x);
+        let mut fretboard = String::from("");
+        if let Some(chord) = opt_chord   {
+            let notes_in_chord = chord.get_notes();
+            let tuning = Tuning::eadgbe();
+            fretboard = join_strings(&mut layout_on_fretboard(&notes_in_chord, &tuning));
+        } 
         return (inversions, fretboard);
     }
     pub fn scale_on_fretboard(scale_name: &str, root: &str) -> Option<(String, String, String)> {
@@ -137,7 +142,7 @@ pub mod guitar_note {
         return Some(join_strings(&mut layout_on_fretboard(&vec![note], &tuning)));
     }
     pub fn print_fret_numbers() -> String {
-        let mut fret_numbers = (1..24)
+        let fret_numbers = (1..24)
             .map(|x| pad_to_length(&x.to_string()))
             .collect::<Vec<_>>()
             .join("  ");
