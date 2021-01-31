@@ -8,12 +8,12 @@ fn main() {
     let matches = App::new("GuitarNotes")
                                 .version("1.0")
                                 .author("Jannes G. <jannesgla@gmail.com>")
-                                .about("Prints out scales and notes on the fretboard to the shell.")
+                                .about("Prints out scales to the shell and identifies chords on the fretboard.")
                                 .arg(Arg::with_name("note")
                                     .short("n")
                                     .long("note")
                                     .multiple(true)
-                                    .help("Finds all occurences of this note given in tab notation, e.g. E3 or A13.")
+                                    .help("Prints out corresponding notes and identifies chords. Example: guitar_notes -n A3 D2 G0 B1 E0")
                                     .takes_value(true))
                                 .arg(Arg::with_name("scale")
                                      .short("s")
@@ -36,7 +36,7 @@ fn main() {
                 println!("{}", results);
             } else {
                 println!(
-                    "I had trouble parsing some notes, are they in tab notation (e.g. E0, A13"
+                    "I had trouble parsing some notes. Are they in tab notation (e.g. E0, A13)?"
                 );
             }
             let fret_numbers = guitar_note::print_fret_numbers();
