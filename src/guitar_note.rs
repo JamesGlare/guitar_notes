@@ -147,7 +147,7 @@ pub mod guitar_note {
             .map(|x| pad_to_length(&x.to_string()))
             .collect::<Vec<_>>()
             .join("  ");
-        return "     ".to_owned() + &fret_numbers;
+        return "      ".to_owned() + &fret_numbers;
     }
     pub fn print_fret_markers() -> String {
         let fret_markers = vec![
