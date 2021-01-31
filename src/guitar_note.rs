@@ -101,7 +101,13 @@ pub mod guitar_note {
                                 }
                             ).collect::<Vec<Option<String>>>();
         let tuning = Tuning::eadgbe();
-        let fretboard = join_strings(&mut layout_on_fretboard(&notes, &tuning));
+        let first_chord_match = chords.into_iter().find_map(|c|c);
+        let fretboard = match first_chord_match {
+            Some(chord) =>  {
+                join_strings(&mut layout_on_fretboard(&notes, &tuning, chord.get_notes().first().unwrap()))
+            },
+            None => String::from(""),
+        };
         return (inversions, fretboard);
     }
     pub fn scale_on_fretboard(scale_name: &str, root: &str) -> Option<(String, String, String)> {
@@ -112,7 +118,7 @@ pub mod guitar_note {
         match (opt_root, parse_result) {
             (Some(root), Ok(scale_type)) => {
                 let scale = Scale::from_type_and_root(root, scale_type);
-                let mut strings = layout_on_fretboard(scale.get_notes(), &tuning);
+                let mut strings = layout_on_fretboard(scale.get_notes(), &tuning, scale.get_notes().first().unwrap());
                 let fretboard = join_strings(&mut strings);
 
                 let degrees = scale.degrees_in_scale().collect::<Vec<_>>().join("\t");
@@ -134,7 +140,7 @@ pub mod guitar_note {
     pub fn all_notes_on_fretboard(note_name: &str) -> Option<String> {
         let note = Note::from_string(note_name)?;
         let tuning = Tuning::eadgbe();
-        return Some(join_strings(&mut layout_on_fretboard(&vec![note], &tuning)));
+        return Some(join_strings(&mut layout_on_fretboard(&vec![note], &tuning, &note)));
     }
     pub fn print_fret_numbers() -> String {
         let fret_numbers = (1..24)
@@ -152,9 +158,9 @@ pub mod guitar_note {
         ].join("  ");
         return " ".to_owned() + &fret_markers;
     }
-    fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning) -> Vec<String> {
+    fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning, root: &Note) -> Vec<String> {
         let mut result: Vec<String> = vec![];
-        let root_str = notes.first().unwrap().to_string();
+        let root_str = root.to_string();
         let capitalize_if_root = |s: &str| {
             if s == root_str {
                 s.to_uppercase()
