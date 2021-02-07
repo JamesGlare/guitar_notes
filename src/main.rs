@@ -1,6 +1,5 @@
 extern crate clap;
 use clap::{App, Arg};
-use guitar_note::guitar_note::print_fret_numbers;
 mod guitar_note;
 
 fn main() {
@@ -18,7 +17,8 @@ fn main() {
                                 .arg(Arg::with_name("scale")
                                      .short("s")
                                      .long("scale")
-                                     .help("Print out scale {major, minor, minor_blues, major_blues, minor_pentatonic, major_pentatonic")
+                                     .help("Print out any scale for a given root. 
+                                            Example: guitar_notes -s E {major, minor, minor_blues, major_blues, minor_pentatonic, major_pentatonic, dorian, lydian, mixolydin}")
                                      .number_of_values(2) )
                                 .arg(Arg::with_name("all_notes")
                                     .short("a")

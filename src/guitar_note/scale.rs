@@ -81,19 +81,19 @@ impl Scale {
             }
             ScaleType::major_blues => {
                 Scale::from_intervals(root.semitones, &Scale::BLUES_MAJOR_INTERVALS, scale_type)
-            },
+            }
             ScaleType::dorian => {
                 Scale::from_intervals(root.semitones, &Scale::DORIAN_INTERVALS, scale_type)
-            },
+            }
             ScaleType::phrygian => {
                 Scale::from_intervals(root.semitones, &Scale::PHRYGIAN_INTERVALS, scale_type)
-            },
+            }
             ScaleType::lydian => {
                 Scale::from_intervals(root.semitones, &Scale::LYDIAN_INTERVALS, scale_type)
-            },
-            ScaleType::myxolydian => {
+            }
+            ScaleType::mixolydian => {
                 Scale::from_intervals(root.semitones, &Scale::MIXOLYDIAN_INTERVALS, scale_type)
-            },
+            }
         };
     }
 
