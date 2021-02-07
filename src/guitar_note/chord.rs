@@ -118,7 +118,7 @@ impl Chord {
     const PERFECT_4: Note = Note { semitones: 5 };
     const FLATTENED_5: Note = Note { semitones: 6 };
     const PERFECT_5: Note = Note { semitones: 7 };
-    const AUGMENTED_5: Note = Note {semitones: 8};
+    const AUGMENTED_5: Note = Note { semitones: 8 };
     const MINOR_6: Note = Note { semitones: 8 };
     const MAJOR_6: Note = Note { semitones: 9 };
     const MINOR_7: Note = Note { semitones: 10 };
@@ -182,10 +182,10 @@ impl Chord {
     fn intervals(&self) -> Vec<Note> {
         let mut notes = self.notes.clone();
         notes.sort();
-        return  notes
-                .windows(2)
-                .map(|slice| (slice[1] - slice[0]))
-                .collect::<Vec<_>>();
+        return notes
+            .windows(2)
+            .map(|slice| (slice[1] - slice[0]))
+            .collect::<Vec<_>>();
     }
     fn all_contained_in(a: &[Note], b: &Vec<Note>) -> Option<Vec<Note>> {
         if a.iter().all(|item| b.contains(item)) {
@@ -304,31 +304,40 @@ impl Chord {
         }
     }
     fn match_triad(root: &Note, intervals: &Vec<Note>) -> Option<Chord> {
-        if let Some(notes) = Chord::all_contained_in(&[Chord::MINOR_3, Chord::PERFECT_5], intervals) {
+        if let Some(notes) = Chord::all_contained_in(&[Chord::MINOR_3, Chord::PERFECT_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
                 ChordType::triad { t: Triad::minor },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_3, Chord::PERFECT_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::PERFECT_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
                 ChordType::triad { t: Triad::major },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_2, Chord::PERFECT_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_2, Chord::PERFECT_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
                 ChordType::triad { t: Triad::sus2 },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::PERFECT_4, Chord::PERFECT_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::PERFECT_4, Chord::PERFECT_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
                 ChordType::triad { t: Triad::sus4 },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MINOR_3, Chord::FLATTENED_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::FLATTENED_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
@@ -336,7 +345,9 @@ impl Chord {
                     t: Triad::minor_diminished,
                 },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_3, Chord::FLATTENED_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::FLATTENED_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
@@ -344,27 +355,37 @@ impl Chord {
                     t: Triad::major_diminished,
                 },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_3, Chord::AUGMENTED_5], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::AUGMENTED_5], intervals)
+        {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::triad {
-                    t: Triad::plus,
-                },
+                ChordType::triad { t: Triad::plus },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_7], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_7], intervals)
+        {
             // a seven with the perfect 5 omitted
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::four_chord { t: Triad::major_omitted_5, e: ChordInterval::minor_7},
+                ChordType::four_chord {
+                    t: Triad::major_omitted_5,
+                    e: ChordInterval::minor_7,
+                },
             ));
-        } else if let Some(notes) = Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_6], intervals) {
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_6], intervals)
+        {
             // a six with the perfect 5 omitted
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::extended_triad { t: Triad::major_omitted_5, e: ChordInterval::major_6},
+                ChordType::extended_triad {
+                    t: Triad::major_omitted_5,
+                    e: ChordInterval::major_6,
+                },
             ));
         } else {
             return None;
@@ -388,7 +409,8 @@ impl Chord {
         } else if let Some(notes) = Chord::all_contained_in(
             &[Chord::MAJOR_3, Chord::MINOR_7, Chord::MAJOR_2],
             &intervals,
-        ) { // this is a nine chord, omitted five on one octave
+        ) {
+            // this is a nine chord, omitted five on one octave
             let new_chord = Chord::from_intervals(
                 *root,
                 &notes,
@@ -413,7 +435,6 @@ impl Chord {
                 },
             );
             return Some(new_chord);
-        
         } else if let Some(notes) = Chord::all_contained_in(
             &[Chord::PERFECT_4, Chord::MINOR_7, Chord::MAJOR_9],
             &intervals,
@@ -431,7 +452,8 @@ impl Chord {
         } else if let Some(notes) = Chord::all_contained_in(
             &[Chord::PERFECT_4, Chord::MINOR_7, Chord::MAJOR_2],
             &intervals,
-        ) { // this is a ninesus chord, omitted five on one octave
+        ) {
+            // this is a ninesus chord, omitted five on one octave
             let new_chord = Chord::from_intervals(
                 *root,
                 &notes,
@@ -445,7 +467,8 @@ impl Chord {
         } else if let Some(notes) = Chord::all_contained_in(
             &[Chord::MAJOR_3, Chord::MINOR_7, Chord::PERFECT_11],
             &intervals,
-        ) { // this is a ninesus chord, omitted five on one octave
+        ) {
+            // this is a ninesus chord, omitted five on one octave
             let new_chord = Chord::from_intervals(
                 *root,
                 &notes,
@@ -547,7 +570,9 @@ impl Chord {
         if let Some(partial_chord) = opt_chord {
             let mut new_chord = partial_chord.clone(); // lazy workaround
             if let ChordType::triad { t } = &partial_chord.type_ {
-                if let Some(_) = Chord::all_contained_in(&[Chord::MINOR_7, Chord::MAJOR_9], &intervals) {
+                if let Some(_) =
+                    Chord::all_contained_in(&[Chord::MINOR_7, Chord::MAJOR_9], &intervals)
+                {
                     new_chord.type_ = ChordType::nine_chord {
                         t: t.clone(),
                         e1: ChordInterval::minor_7,
@@ -555,7 +580,9 @@ impl Chord {
                     };
                     new_chord.notes.push(Chord::MAJOR_2);
                     return Some(new_chord);
-                } else if let Some(_) = Chord::all_contained_in(&[Chord::MAJOR_7, Chord::MAJOR_9], &intervals) {
+                } else if let Some(_) =
+                    Chord::all_contained_in(&[Chord::MAJOR_7, Chord::MAJOR_9], &intervals)
+                {
                     new_chord.type_ = ChordType::nine_chord {
                         t: t.clone(),
                         e1: ChordInterval::major_7,
@@ -618,30 +645,29 @@ impl Chord {
                     // if we don't find anything, then squash the octave and try again
                     if let Some(triad) = opt_chord {
                         // filter out remaining note
-                        let fourth_note = *relative.iter()
-                                                        .find(|n|!triad.intervals().contains(*n) 
-                                                                        && n.semitones != 0)
-                                                        .unwrap();
+                        let fourth_note = *relative
+                            .iter()
+                            .find(|n| !triad.intervals().contains(*n) && n.semitones != 0)
+                            .unwrap();
                         opt_four_chord = Chord::match_extended_triad(&triad, &vec![fourth_note]);
                         if opt_four_chord.is_none() {
                             // try again without octaves
-                            let fourth_note = *no_octaves.iter()
-                                                              .find(|n|!triad.intervals().contains(*n) 
-                                                                              && n.semitones != 0)
-                                                              .unwrap();
-                            opt_four_chord = Chord::match_extended_triad(&triad, &vec![fourth_note]);
-                        } 
-                        
-                    } 
+                            let fourth_note = *no_octaves
+                                .iter()
+                                .find(|n| !triad.intervals().contains(*n) && n.semitones != 0)
+                                .unwrap();
+                            opt_four_chord =
+                                Chord::match_extended_triad(&triad, &vec![fourth_note]);
+                        }
+                    }
                     if opt_four_chord.is_none() {
-                        
                         opt_four_chord = Chord::match_four_chord(root, &relative);
                         if opt_four_chord.is_none() {
                             opt_four_chord = Chord::match_four_chord(root, &no_octaves);
-                        } 
+                        }
                     }
                     results.push(opt_four_chord);
-                },
+                }
                 5 => {
                     let no_octaves = relative.iter().map(|s| s.no_octaves()).collect::<Vec<_>>();
                     let opt_chord = Chord::match_triad(root, &no_octaves);
@@ -729,29 +755,29 @@ fn test_find_chord() {
         .iter()
         .map(|s| Note { semitones: *s + 0 })
         .collect::<Vec<_>>();
-    let notes6 =  vec![0, 4, 9, 7]
-    .iter()
-    .map(|s| Note { semitones: *s + 4 })
-    .collect::<Vec<_>>();
-    let notes7 =  vec![0, 4, 8]
-    .iter()
-    .map(|s| Note { semitones: *s + 31 })
-    .collect::<Vec<_>>();
+    let notes6 = vec![0, 4, 9, 7]
+        .iter()
+        .map(|s| Note { semitones: *s + 4 })
+        .collect::<Vec<_>>();
+    let notes7 = vec![0, 4, 8]
+        .iter()
+        .map(|s| Note { semitones: *s + 31 })
+        .collect::<Vec<_>>();
     // second inversion of a major chord
-    let notes8 =  vec![0, 3, 8]
-    .iter()
-    .map(|s| Note { semitones: *s + 5 })
-    .collect::<Vec<_>>();
+    let notes8 = vec![0, 3, 8]
+        .iter()
+        .map(|s| Note { semitones: *s + 5 })
+        .collect::<Vec<_>>();
     // first inversion of a major chord
-    let notes9 =  vec![0, 5, 9]
-    .iter()
-    .map(|s| Note { semitones: *s + 3 })
-    .collect::<Vec<_>>();
+    let notes9 = vec![0, 5, 9]
+        .iter()
+        .map(|s| Note { semitones: *s + 3 })
+        .collect::<Vec<_>>();
     // 7 Chord, omitted five
-    let notes10 =  vec![0, 4, 10]
-    .iter()
-    .map(|s| Note { semitones: *s + 11 })
-    .collect::<Vec<_>>();
+    let notes10 = vec![0, 4, 10]
+        .iter()
+        .map(|s| Note { semitones: *s + 11 })
+        .collect::<Vec<_>>();
     let chord1 = Chord::find_chord(&notes1);
     let chord2 = Chord::find_chord(&notes2);
     let chord3 = Chord::find_chord(&notes3);
@@ -799,21 +825,15 @@ fn test_find_chord() {
     );
     assert_eq!(
         chord7[0].clone().unwrap().type_,
-        ChordType::triad {
-            t: Triad::plus,
-        }
+        ChordType::triad { t: Triad::plus }
     );
     assert_eq!(
         chord8[2].clone().unwrap().type_,
-        ChordType::triad {
-            t: Triad::major,
-        }
+        ChordType::triad { t: Triad::major }
     );
     assert_eq!(
         chord9[1].clone().unwrap().type_,
-        ChordType::triad {
-            t: Triad::major,
-        }
+        ChordType::triad { t: Triad::major }
     );
     assert_eq!(
         chord10[0].clone().unwrap().type_,

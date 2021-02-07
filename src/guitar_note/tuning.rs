@@ -1,4 +1,3 @@
-
 use super::note::Note;
 pub enum TuningType {
     eadgbe,

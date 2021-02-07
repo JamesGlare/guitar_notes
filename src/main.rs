@@ -34,33 +34,33 @@ fn main() {
             let note_results = guitar_note::from_tab_notation(&notes);
             if let Some(results) = note_results {
                 println!("{}", results);
+                let fret_numbers = guitar_note::print_fret_numbers();
+                let fret_markers = guitar_note::print_fret_markers();
+                let (chord_strings, fretboard) = guitar_note::chord_from_tab_notation(&notes);
+
+                if chord_strings.is_empty() || chord_strings.iter().all(|s| s.is_none()) {
+                    println!("This is not a chord that I know.");
+                } else {
+                    for (idx, opt_chord_string) in chord_strings.iter().enumerate() {
+                        if let Some(chord_string) = opt_chord_string {
+                            if idx == 0 {
+                                println!("Chord: {}", chord_string);
+                            } else {
+                                println!("{}. inversion: {}", idx, chord_string);
+                            }
+                        }
+                    }
+                    // print the notes on the fretboard
+                    println!("{}", fret_numbers);
+                    print!("\n");
+                    println!("{}", fretboard);
+                    print!("\n");
+                    println!("{}", fret_markers);
+                }
             } else {
                 println!(
                     "I had trouble parsing some notes. Are they in tab notation (e.g. E0, A13)?"
                 );
-            }
-            let fret_numbers = guitar_note::print_fret_numbers();
-            let fret_markers = guitar_note::print_fret_markers();
-            let (chord_strings, fretboard) = guitar_note::chord_from_tab_notation(&notes);
-
-            if chord_strings.is_empty() || chord_strings.iter().all(|s| s.is_none()){
-                println!("This is not a chord that I know.");
-            } else {
-                for (idx, opt_chord_string) in chord_strings.iter().enumerate() {
-                    if let Some(chord_string) = opt_chord_string {
-                        if idx == 0 {
-                            println!("Chord: {}", chord_string);
-                        } else {
-                            println!("{}. inversion: {}", idx, chord_string);
-                        }
-                    }
-                }
-                 // print the notes on the fretboard
-                println!("{}", fret_numbers);
-                print!("\n");
-                println!("{}", fretboard);
-                print!("\n");
-                println!("{}", fret_markers); 
             }
         }
         None => {}

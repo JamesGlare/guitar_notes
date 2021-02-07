@@ -12,6 +12,10 @@ pub enum ScaleType {
     major_blues,
     minor_pentatonic,
     major_pentatonic,
+    dorian,
+    phrygian,
+    lydian,
+    mixolydian,
 }
 
 pub struct Scale {
@@ -26,10 +30,14 @@ impl Scale {
     const MAJOR_PENTATONIC_INTERVALS: [i32; 6] = [0, 2, 2, 3, 2, 3];
     const BLUES_MINOR_INTERVALS: [i32; 7] = [0, 3, 2, 1, 1, 3, 2];
     const BLUES_MAJOR_INTERVALS: [i32; 7] = [0, 2, 1, 1, 3, 2, 3];
+    const DORIAN_INTERVALS: [i32; 8] = [0, 2, 1, 2, 2, 2, 1, 2];
+    const PHRYGIAN_INTERVALS: [i32; 8] = [0, 1, 2, 2, 2, 1, 2, 2];
+    const LYDIAN_INTERVALS: [i32; 8] = [0, 2, 2, 2, 1, 2, 2, 1];
+    const MIXOLYDIAN_INTERVALS: [i32; 8] = [0, 2, 2, 1, 2, 2, 1, 2];
     const DEGREE: [&'static str; 13] = [
         "1", "2b", "2", "3b", "3", "4", "5b", "5", "6b", "6", "7b", "7", "8",
     ];
-    
+
     pub fn get_notes<'a>(&'a self) -> &'a Vec<Note> {
         return &self.notes;
     }
@@ -73,7 +81,19 @@ impl Scale {
             }
             ScaleType::major_blues => {
                 Scale::from_intervals(root.semitones, &Scale::BLUES_MAJOR_INTERVALS, scale_type)
-            }
+            },
+            ScaleType::dorian => {
+                Scale::from_intervals(root.semitones, &Scale::DORIAN_INTERVALS, scale_type)
+            },
+            ScaleType::phrygian => {
+                Scale::from_intervals(root.semitones, &Scale::PHRYGIAN_INTERVALS, scale_type)
+            },
+            ScaleType::lydian => {
+                Scale::from_intervals(root.semitones, &Scale::LYDIAN_INTERVALS, scale_type)
+            },
+            ScaleType::myxolydian => {
+                Scale::from_intervals(root.semitones, &Scale::MIXOLYDIAN_INTERVALS, scale_type)
+            },
         };
     }
 

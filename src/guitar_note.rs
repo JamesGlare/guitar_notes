@@ -1,15 +1,14 @@
-mod note;
 mod chord;
-mod tuning;
+mod note;
 mod scale;
+mod tuning;
 
 pub mod guitar_note {
-    use super::note::Note;
-    use super::tuning::Tuning;
     use super::chord::Chord;
+    use super::note::Note;
     use super::scale::Scale;
     use super::scale::ScaleType;
-    
+    use super::tuning::Tuning;
 
     fn parse_tab_notation(tab_note: &Vec<String>) -> Vec<Note> {
         let (note_strs, frets): (Vec<_>, Vec<_>) = tab_note
@@ -93,19 +92,24 @@ pub mod guitar_note {
     pub fn chord_from_tab_notation(note_str: &Vec<String>) -> (Vec<Option<String>>, String) {
         let notes = parse_tab_notation(note_str);
         let chords = Chord::find_chord(&notes);
-        let inversions= chords.iter().map(|opt_c| 
-                                 if let Some(c) = opt_c {
-                                     Some(c.to_string())
-                                } else {
-                                    None
-                                }
-                            ).collect::<Vec<Option<String>>>();
+        let inversions = chords
+            .iter()
+            .map(|opt_c| {
+                if let Some(c) = opt_c {
+                    Some(c.to_string())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<Option<String>>>();
         let tuning = Tuning::eadgbe();
-        let first_chord_match = chords.into_iter().find_map(|c|c);
+        let first_chord_match = chords.into_iter().find_map(|c| c);
         let fretboard = match first_chord_match {
-            Some(chord) =>  {
-                join_strings(&mut layout_on_fretboard(&notes, &tuning, chord.get_notes().first().unwrap()))
-            },
+            Some(chord) => join_strings(&mut layout_on_fretboard(
+                &notes,
+                &tuning,
+                chord.get_notes().first().unwrap(),
+            )),
             None => String::from(""),
         };
         return (inversions, fretboard);
@@ -118,7 +122,11 @@ pub mod guitar_note {
         match (opt_root, parse_result) {
             (Some(root), Ok(scale_type)) => {
                 let scale = Scale::from_type_and_root(root, scale_type);
-                let mut strings = layout_on_fretboard(scale.get_notes(), &tuning, scale.get_notes().first().unwrap());
+                let mut strings = layout_on_fretboard(
+                    scale.get_notes(),
+                    &tuning,
+                    scale.get_notes().first().unwrap(),
+                );
                 let fretboard = join_strings(&mut strings);
 
                 let degrees = scale.degrees_in_scale().collect::<Vec<_>>().join("\t");
@@ -140,7 +148,11 @@ pub mod guitar_note {
     pub fn all_notes_on_fretboard(note_name: &str) -> Option<String> {
         let note = Note::from_string(note_name)?;
         let tuning = Tuning::eadgbe();
-        return Some(join_strings(&mut layout_on_fretboard(&vec![note], &tuning, &note)));
+        return Some(join_strings(&mut layout_on_fretboard(
+            &vec![note],
+            &tuning,
+            &note,
+        )));
     }
     pub fn print_fret_numbers() -> String {
         let fret_numbers = (1..24)
@@ -152,10 +164,11 @@ pub mod guitar_note {
     pub fn print_fret_markers() -> String {
         let fret_markers = vec![
             "   ", "  ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "  ", ": ",
-         /*  0    1   2    3     4    5    6    7   8    9   10    11   12 */
-            "  ", "  ", "* ",  "  ",   "* ",  "  ",  "* ",  "  ", "* ",  "  ", "* ", "  " 
-         /*  13  14   15    16     17    18    19    20   21    22   23   24*/            
-        ].join("  ");
+            /*  0    1   2    3     4    5    6    7   8    9   10    11   12 */
+            "  ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "* ", "  ", "* ",
+            "  ", /*  13  14   15    16     17    18    19    20   21    22   23   24*/
+        ]
+        .join("  ");
         return " ".to_owned() + &fret_markers;
     }
     fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning, root: &Note) -> Vec<String> {
