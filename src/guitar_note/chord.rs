@@ -156,7 +156,7 @@ impl Chord {
             ChordType::triad { t } => format!("{}", t.to_string()),
             ChordType::extended_triad { t, e } => format!("{}add{}", t.to_string(), e.to_string()),
             ChordType::four_chord { t, e } => format!("{}{}", t.to_string(), e.to_string()),
-            ChordType::nine_chord { t, e1, e2 } => format!("9{}", t.to_string()),
+            ChordType::nine_chord { t, e1, e2 } => format!("{}{}", t.to_string(), e2.to_string()),
             ChordType::eleven_chord { t, e1, e2, e3 } => format!("11{}", t.to_string()),
         };
         return format!("{}{}", self.notes[0].to_string().to_uppercase(), type_str);
@@ -416,6 +416,36 @@ impl Chord {
                 &notes,
                 ChordType::nine_chord {
                     t: Triad::major_omitted_5,
+                    e1: ChordInterval::minor_7,
+                    e2: ChordInterval::major_9,
+                },
+            );
+            return Some(new_chord);
+        } else if let Some(notes) = Chord::all_contained_in(
+            &[Chord::MINOR_3, Chord::MINOR_7, Chord::MAJOR_9],
+            &intervals,
+        ) {
+            // this is a nine chord, omitted five 
+            let new_chord = Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::nine_chord {
+                    t: Triad::minor_omitted_5,
+                    e1: ChordInterval::minor_7,
+                    e2: ChordInterval::major_9,
+                },
+            );
+            return Some(new_chord);
+        } else if let Some(notes) = Chord::all_contained_in(
+            &[Chord::MINOR_3, Chord::MINOR_7, Chord::MAJOR_2],
+            &intervals,
+        ) {
+            // this is a nine chord, omitted five on one octave
+            let new_chord = Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::nine_chord {
+                    t: Triad::minor_omitted_5,
                     e1: ChordInterval::minor_7,
                     e2: ChordInterval::major_9,
                 },
