@@ -497,6 +497,21 @@ impl Chord {
                 },
             );
             return Some(new_chord);
+        } else if let Some(notes) = Chord::all_contained_in(
+            &[Chord::MAJOR_3, Chord::MINOR_7, Chord::MINOR_9],
+            &intervals,
+        ) {
+            // this is a ninesus chord, omitted five on one octave
+            let new_chord = Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::nine_chord {
+                    t: Triad::major_omitted_5,
+                    e1: ChordInterval::minor_7,
+                    e2: ChordInterval::minor_9,
+                },
+            );
+            return Some(new_chord);
         } else if let Some(notes) =
             Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_7, Chord::PLUS_9], &intervals)
         {
@@ -636,6 +651,16 @@ impl Chord {
                         e2: ChordInterval::major_9,
                     };
                     new_chord.notes.push(Chord::MAJOR_2);
+                    return Some(new_chord);
+                } else if let Some(_) =
+                    Chord::all_contained_in(&[Chord::MAJOR_7, Chord::MINOR_9], &intervals)
+                {
+                    new_chord.type_ = ChordType::nine_chord {
+                        t: t.clone(),
+                        e1: ChordInterval::major_7,
+                        e2: ChordInterval::minor_9,
+                    };
+                    new_chord.notes.push(Chord::MINOR_9);
                     return Some(new_chord);
                 } else if let Some(_) =
                     Chord::all_contained_in(&[Chord::MINOR_7, Chord::PLUS_9], &intervals)
