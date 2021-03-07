@@ -52,6 +52,7 @@ enum ChordInterval {
     major_7,
     minor_9,
     major_9,
+    plus_9,
     perfect_11,
     augmented_11,
 }
@@ -72,6 +73,7 @@ impl ChordInterval {
             ChordInterval::major_7 => "7maj",
             ChordInterval::minor_9 => "9m",
             ChordInterval::major_9 => "9",
+            ChordInterval::plus_9 => "9+",
             ChordInterval::perfect_11 => "11",
             ChordInterval::augmented_11 => "aug11",
         };
@@ -125,6 +127,7 @@ impl Chord {
     const MAJOR_7: Note = Note { semitones: 11 };
     const MINOR_9: Note = Note { semitones: 13 };
     const MAJOR_9: Note = Note { semitones: 14 };
+    const PLUS_9: Note = Note { semitones: 15 };
     const PERFECT_11: Note = Note { semitones: 17 };
     const AUGMENTED_11: Note = Note { semitones: 18 };
 
@@ -400,7 +403,7 @@ impl Chord {
                 *root,
                 &notes,
                 ChordType::nine_chord {
-                    t: Triad::major,
+                    t: Triad::major_omitted_5,
                     e1: ChordInterval::minor_7,
                     e2: ChordInterval::major_9,
                 },
@@ -425,7 +428,7 @@ impl Chord {
             &[Chord::MINOR_3, Chord::MINOR_7, Chord::MAJOR_9],
             &intervals,
         ) {
-            // this is a nine chord, omitted five 
+            // this is a nine chord, omitted five
             let new_chord = Chord::from_intervals(
                 *root,
                 &notes,
@@ -491,6 +494,20 @@ impl Chord {
                     t: Triad::sus4_omitted_5,
                     e1: ChordInterval::minor_7,
                     e2: ChordInterval::major_9,
+                },
+            );
+            return Some(new_chord);
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_7, Chord::PLUS_9], &intervals)
+        {
+            // this is a ninesus chord, omitted five on one octave
+            let new_chord = Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::nine_chord {
+                    t: Triad::major_omitted_5,
+                    e1: ChordInterval::minor_7,
+                    e2: ChordInterval::plus_9,
                 },
             );
             return Some(new_chord);
@@ -619,6 +636,16 @@ impl Chord {
                         e2: ChordInterval::major_9,
                     };
                     new_chord.notes.push(Chord::MAJOR_2);
+                    return Some(new_chord);
+                } else if let Some(_) =
+                    Chord::all_contained_in(&[Chord::MINOR_7, Chord::PLUS_9], &intervals)
+                {
+                    new_chord.type_ = ChordType::nine_chord {
+                        t: t.clone(),
+                        e1: ChordInterval::major_7,
+                        e2: ChordInterval::plus_9,
+                    };
+                    new_chord.notes.push(Chord::PLUS_9);
                     return Some(new_chord);
                 }
             }
