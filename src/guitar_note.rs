@@ -130,8 +130,14 @@ pub mod guitar_note {
                 let fretboard = join_strings(&mut strings);
 
                 let degrees = scale.degrees_in_scale().collect::<Vec<_>>().join("\t");
+                let chords = scale.chords_in_scale().join("\t");
                 let notes = scale.notes_in_scale().collect::<Vec<_>>().join("\t");
-                return Some((fretboard, degrees, notes));
+                return match scale.scale_type {
+                    ScaleType::major_blues | ScaleType::minor_blues => {
+                        Some((fretboard, degrees, notes))
+                    }
+                    _ => Some((fretboard, degrees, chords)),
+                };
             }
             _ => {
                 return None;

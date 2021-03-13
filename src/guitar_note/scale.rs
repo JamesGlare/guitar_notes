@@ -20,7 +20,7 @@ pub enum ScaleType {
 
 pub struct Scale {
     notes: Vec<Note>,
-    scale_type: ScaleType,
+    pub scale_type: ScaleType,
 }
 
 impl Scale {
@@ -100,9 +100,35 @@ impl Scale {
     fn root(&self) -> Note {
         return self.notes[0].clone();
     }
+    pub fn chords_in_scale(&self) -> Vec<String> {
+        use super::chord::Chord;
+        let mut chord_names = vec![];
+        let n_notes = self.notes.len();
 
+        let two_octaves = self
+            .notes
+            .iter()
+            .take(self.notes.len() - 1)
+            .map(|n| *n)
+            .chain(self.notes.iter().map(|n| (*n + Note::octave())))
+            .collect::<Vec<Note>>();
+        for i in 0..n_notes {
+            let chords = Chord::find_chord(&vec![
+                two_octaves[i],
+                two_octaves[i + 2],
+                two_octaves[i + 4],
+            ]);
+            let first_chord = chords[0].clone();
+            match first_chord {
+                Some(chord) => chord_names.push(chord.to_string()),
+                None => chord_names.push(String::from("x ")),
+            };
+        }
+        return chord_names;
+    }
     pub fn degrees_in_scale<'a>(&'a self) -> impl Iterator<Item = &'a str> {
         let root_semitone = self.root().clone().semitones;
+
         return self
             .notes
             .iter()
