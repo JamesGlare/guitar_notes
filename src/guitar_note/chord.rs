@@ -71,7 +71,7 @@ impl ChordInterval {
             ChordInterval::minor_7 => "7",
             /* for the seven, indicate the major */
             ChordInterval::major_7 => "7maj",
-            ChordInterval::minor_9 => "9m",
+            ChordInterval::minor_9 => "9-",
             ChordInterval::major_9 => "9",
             ChordInterval::plus_9 => "9+",
             ChordInterval::perfect_11 => "11",
@@ -367,6 +367,18 @@ impl Chord {
                 ChordType::triad { t: Triad::plus },
             ));
         } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_6], intervals)
+        {
+            // a six with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::extended_triad {
+                    t: Triad::major_omitted_5,
+                    e: ChordInterval::major_6,
+                },
+            ));
+        } else if let Some(notes) =
             Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_7], intervals)
         {
             // a seven with the perfect 5 omitted
@@ -379,15 +391,39 @@ impl Chord {
                 },
             ));
         } else if let Some(notes) =
-            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_6], intervals)
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_7], intervals)
         {
-            // a six with the perfect 5 omitted
+            // a seven with the perfect 5 omitted
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::extended_triad {
+                ChordType::four_chord {
                     t: Triad::major_omitted_5,
-                    e: ChordInterval::major_6,
+                    e: ChordInterval::major_7,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MINOR_9], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::four_chord {
+                    t: Triad::major_omitted_5,
+                    e: ChordInterval::minor_9,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_9], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::four_chord {
+                    t: Triad::major_omitted_5,
+                    e: ChordInterval::major_9,
                 },
             ));
         } else {
