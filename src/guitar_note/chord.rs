@@ -397,7 +397,7 @@ impl Chord {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::four_chord {
+                ChordType::extended_triad {
                     t: Triad::major_omitted_5,
                     e: ChordInterval::major_7,
                 },
@@ -409,7 +409,7 @@ impl Chord {
             return Some(Chord::from_intervals(
                 *root,
                 &notes,
-                ChordType::four_chord {
+                ChordType::extended_triad {
                     t: Triad::major_omitted_5,
                     e: ChordInterval::minor_9,
                 },
