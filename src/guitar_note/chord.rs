@@ -367,6 +367,18 @@ impl Chord {
                 ChordType::triad { t: Triad::plus },
             ));
         } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::MAJOR_6], intervals)
+        {
+            // a six with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::extended_triad {
+                    t: Triad::minor_omitted_5,
+                    e: ChordInterval::major_6,
+                },
+            ));
+        } else if let Some(notes) =
             Chord::all_contained_in(&[Chord::MAJOR_3, Chord::MAJOR_6], intervals)
         {
             // a six with the perfect 5 omitted
@@ -376,6 +388,30 @@ impl Chord {
                 ChordType::extended_triad {
                     t: Triad::major_omitted_5,
                     e: ChordInterval::major_6,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::MINOR_7], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::four_chord {
+                    t: Triad::minor_omitted_5,
+                    e: ChordInterval::minor_7,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::MAJOR_7], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::four_chord {
+                    t: Triad::minor_omitted_5,
+                    e: ChordInterval::major_7,
                 },
             ));
         } else if let Some(notes) =
@@ -400,6 +436,30 @@ impl Chord {
                 ChordType::four_chord {
                     t: Triad::major_omitted_5,
                     e: ChordInterval::major_7,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::MINOR_9], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::extended_triad {
+                    t: Triad::minor_omitted_5,
+                    e: ChordInterval::minor_9,
+                },
+            ));
+        } else if let Some(notes) =
+            Chord::all_contained_in(&[Chord::MINOR_3, Chord::MAJOR_9], intervals)
+        {
+            // a seven with the perfect 5 omitted
+            return Some(Chord::from_intervals(
+                *root,
+                &notes,
+                ChordType::extended_triad {
+                    t: Triad::minor_omitted_5,
+                    e: ChordInterval::major_9,
                 },
             ));
         } else if let Some(notes) =
@@ -748,8 +808,13 @@ impl Chord {
                 }
                 3 => {
                     /* TRIAD CHORD */
-                    let triad = relative.iter().map(|s| s.no_octaves()).collect::<Vec<_>>();
+                    let triad = relative.iter().map(|s| *s).collect::<Vec<_>>();
                     let opt_chord = Chord::match_triad(root, &triad);
+                    if let Some(_) = opt_chord {
+                        results.push(opt_chord);
+                    }
+                    let triad_no_oct = relative.iter().map(|s| s.no_octaves()).collect::<Vec<_>>();
+                    let opt_chord = Chord::match_triad(root, &triad_no_oct);
                     results.push(opt_chord);
                 }
                 4 => {
