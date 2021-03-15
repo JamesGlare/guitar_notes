@@ -1,3 +1,4 @@
+#![feature(let_chains)]
 extern crate clap;
 use clap::{App, Arg};
 mod guitar_note;
