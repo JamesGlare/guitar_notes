@@ -348,6 +348,11 @@ impl Chord {
                 Interval::PLUS_9 => match candidate {
                     ChordType::UNKNOWN => ChordType::TwoTone { t: interval },
                     ChordType::Triad { t } => ChordType::AddChord { t: t, e: interval },
+                    ChordType::SevenChord { t, e } => ChordType::NineChord {
+                        t,
+                        e1: e,
+                        e2: interval,
+                    },
                     _ => ChordType::UNKNOWN,
                 },
                 Interval::PERFECT_11 => match candidate {
