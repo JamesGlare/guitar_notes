@@ -1,4 +1,4 @@
-use std::{cmp, collections::VecDeque};
+use std::cmp;
 extern crate enum_utils;
 extern crate itertools;
 use super::note::Note;
@@ -229,15 +229,13 @@ impl Chord {
          * 2. sorted
          * 3. made unique
          */
-        let mut sequence = VecDeque::from(
-            intervals
-                .iter()
-                .skip(1) // skip 0
-                .map(|n| Interval { note: *n })
-                .collect::<Vec<Interval>>(),
-        );
+        let sequence = intervals
+            .iter()
+            .skip(1) // skip 0
+            .map(|n| Interval { note: *n })
+            .collect::<Vec<Interval>>();
         let mut candidate = ChordType::UNKNOWN;
-        while let Some(interval) = sequence.pop_front() {
+        for interval in sequence {
             candidate = match interval {
                 Interval::MINOR_2 => ChordType::TwoTone { t: interval },
                 Interval::MAJOR_2 => match candidate {
@@ -375,7 +373,7 @@ impl Chord {
                 _ => break, //
             };
             // break early if unsuccessful
-            if candidate == ChordType::UNKNOWN{
+            if candidate == ChordType::UNKNOWN {
                 break;
             }
         }
@@ -399,7 +397,8 @@ impl Chord {
             // build relative semitone steps
             let mut intervals = inversion
                 .iter()
-                .map(|s| {let diff = *s - *root;
+                .map(|s| {
+                    let diff = *s - *root;
                     if diff > Interval::AUGMENTED_11.note {
                         diff.no_octaves()
                     } else {
@@ -542,7 +541,7 @@ fn test_find_chord() {
     let chord9 = Chord::find_chord(&notes9);
     let chord10 = Chord::find_chord(&notes10);
     let chord11 = Chord::find_chord(&notes11);
-    
+
     assert_eq!(
         chord1[0].clone().unwrap().type_,
         ChordType::Triad {
