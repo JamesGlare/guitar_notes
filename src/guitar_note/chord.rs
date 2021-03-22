@@ -370,9 +370,9 @@ impl Chord {
                     },
                     _ => ChordType::UNKNOWN,
                 },
-                _ => break, //
+                _ => ChordType::UNKNOWN, //
             };
-            // break early if unsuccessful
+            // no transition out of unknown
             if candidate == ChordType::UNKNOWN {
                 break;
             }
