@@ -25,8 +25,8 @@ impl TriadType {
             TriadType::major | TriadType::major_omitted_5 => "",
             TriadType::sus2 => "sus2",
             TriadType::sus4 => "sus4",
-            TriadType::minor_diminished => "mdim",
-            TriadType::major_diminished => "dim",
+            TriadType::minor_diminished => "dim",
+            TriadType::major_diminished => "maj-dim",
             TriadType::plus => "+",
         };
     }
