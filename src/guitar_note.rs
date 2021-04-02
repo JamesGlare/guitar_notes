@@ -10,14 +10,13 @@ pub mod guitar_note {
     use super::scale::ScaleType;
     use super::tuning::Tuning;
 
-    fn parse_tab_notation(tab_note: &Vec<String>) -> Vec<Note> {
+    fn parse_tab_notation(tab_note: &Vec<String>, tuning: &Tuning) -> Vec<Note> {
         let (note_strs, frets): (Vec<_>, Vec<_>) = tab_note
             .iter()
             .map(|s| split_string_fret(s))
             .filter(|x| x.is_some())
             .map(|x| x.unwrap())
             .unzip();
-        let tuning = Tuning::eadgbe();
         let offsets = frets
             .iter()
             .map(|s| Note { semitones: *s })
@@ -72,11 +71,11 @@ pub mod guitar_note {
         assert_eq!(res, None);
     }
 
-    pub fn from_tab_notation(note_str: &Vec<String>) -> Option<String> {
+    pub fn from_tab_notation(note_str: &Vec<String>, tuning: &Tuning) -> Option<String> {
         /* tab_note string needs to be of format
          * <string><fret>, e.g. E3 or A10.
          */
-        let opt_notes = parse_tab_notation(note_str);
+        let opt_notes = parse_tab_notation(note_str, tuning);
         return match opt_notes.len() > 0 {
             true => Some(
                 opt_notes
@@ -89,8 +88,16 @@ pub mod guitar_note {
             false => None,
         };
     }
-    pub fn chord_from_tab_notation(note_str: &Vec<String>) -> (Vec<Option<String>>, String) {
-        let notes = parse_tab_notation(note_str);
+
+    pub fn parse_tuning(tuning_name: &str) -> Option<Tuning> {
+        return Tuning::from_name(tuning_name);
+    }
+    
+    pub fn chord_from_tab_notation(
+        note_str: &Vec<String>,
+        tuning: &Tuning,
+    ) -> (Vec<Option<String>>, String) {
+        let notes = parse_tab_notation(note_str, tuning);
         let chords = Chord::find_chord(&notes);
         let inversions = chords
             .iter()
@@ -102,7 +109,7 @@ pub mod guitar_note {
                 }
             })
             .collect::<Vec<Option<String>>>();
-        let tuning = Tuning::eadgbe();
+
         let first_chord_match = chords.into_iter().find_map(|c| c);
         let fretboard = match first_chord_match {
             Some(chord) => join_strings(&mut layout_on_fretboard(
@@ -114,9 +121,12 @@ pub mod guitar_note {
         };
         return (inversions, fretboard);
     }
-    pub fn scale_on_fretboard(scale_name: &str, root: &str) -> Option<(String, String, String)> {
+    pub fn scale_on_fretboard(
+        scale_name: &str,
+        root: &str,
+        tuning: &Tuning,
+    ) -> Option<(String, String, String)> {
         // Interface
-        let tuning = Tuning::eadgbe();
         let opt_root = Note::from_string(root);
         let parse_result = scale_name.parse::<ScaleType>();
         match (opt_root, parse_result) {
@@ -151,9 +161,8 @@ pub mod guitar_note {
             return format!("{}", cifar);
         }
     }
-    pub fn all_notes_on_fretboard(note_name: &str) -> Option<String> {
+    pub fn all_notes_on_fretboard(note_name: &str, tuning: &Tuning) -> Option<String> {
         let note = Note::from_string(note_name)?;
-        let tuning = Tuning::eadgbe();
         return Some(join_strings(&mut layout_on_fretboard(
             &vec![note],
             &tuning,
@@ -251,7 +260,8 @@ pub mod guitar_note {
     fn test_scale_print() {
         let scale_name = "major_blues";
         let root = "a";
-        let opt_result = scale_on_fretboard(scale_name, root);
+        let tuning = Tuning::from_name("eadgbe").unwrap();
+        let opt_result = scale_on_fretboard(scale_name, root, &tuning);
         if let Some(result) = opt_result {
             println!("{}", result.2);
             println!("{}", result.1);
