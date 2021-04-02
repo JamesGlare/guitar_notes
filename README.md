@@ -1,9 +1,28 @@
-# guitar_notes
+# Guitarnotes
 Command line program that helps to visualise guitar chords, notes, and scales.
 
-## Print arbitrary scales for 12 different tunings
+## Print arbitrary scales or modes for 12 different tunings
+With the `--scale` or `-s` option, `guitarnotes` will print a scale or mode to the command line and output the chords in this scale (first line of ouput).
 
 `Syntax: guitarnotes -s <root> <scale_name> -t <tuning_name>`
+
+*Example with default tuning*:
+$guitarnotes --scale g major
+```
+G       Am      Bm      C       D       Em      F#dim   G
+1       2       3       4       5       6       7       8
+
+      1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
+
+ e |  -   f#  G   -   a   -   b   c   -   d   -   e   -   f#  G   -   a   -   b   c   -   d   -
+ b |  c   -   d   -   e   -   f#  G   -   a   -   b   c   -   d   -   e   -   f#  G   -   a   -
+ G |  -   a   -   b   c   -   d   -   e   -   f#  G   -   a   -   b   c   -   d   -   e   -   f#
+ d |  -   e   -   f#  G   -   a   -   b   c   -   d   -   e   -   f#  G   -   a   -   b   c   -
+ a |  -   b   c   -   d   -   e   -   f#  G   -   a   -   b   c   -   d   -   e   -   f#  G   -
+ e |  -   f#  G   -   a   -   b   c   -   d   -   e   -   f#  G   -   a   -   b   c   -   d   -
+
+              *       *       *       *           :           *       *       *       *       *
+```
 
 *Example with default tuning*:
 $guitarnotes -s c dorian
