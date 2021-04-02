@@ -7,7 +7,8 @@ _Input_:
 $guitarnotes -s c dorian
 
 
-_Output_:```
+_Output_:
+```
 Cm      Dm      D#      F       Gm      Adim    A#      Cm
 1       2       3b      4       5       6       7b      8
 
