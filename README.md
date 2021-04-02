@@ -6,6 +6,8 @@ With the `--scale` or `-s` option, `guitarnotes` will print a scale or mode to t
 
 `Syntax: guitarnotes -s <root> <scale_name> -t <tuning_name>`
 
+The scale_name can be one of `minor, major, minor_blues, major_blues, minor_pentatonic, major_pentatonic, dorian, phrygian, lydian, mixolydian`.
+
 *Example with default tuning*:
 
 $guitarnotes --scale g major
@@ -65,6 +67,7 @@ a       c       d       d#      e       g       a
 ```
 
 ## Find the notes and the name of the corresponding chord (incl. inversions) from a fret constellation
+With `--note` or `-n` option and up to six fret positions (e.g. `A3` or `D12`), guitarnotes will return the corresponding notes as well as the chord, and its inversions.
 This is useful for quick lookup of notes that correspond to fret positions or to identify chords and their inversions.
 
 `Syntax: guitarnotes -n <fret_positions> -t <tuning_name>`
@@ -107,7 +110,10 @@ Chord: Dsus2
               *       *       *       *           :           *       *       *       *       *
 ```
 
-## Print all positions of a particular note (useful for note training)
+## Print all positions of a particular note
+The `--all` or `-a` option will print all positions of a particular note (useful for note training) on the fretboard.
+Again, this option can be combined with the 12 supported tunings.
+
 *Example in default tuning:* 
 
 $guitarnotes --all c#
@@ -137,4 +143,9 @@ $guitarnotes --all c# --tuning openc
    |  C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -
 
               *       *       *       *           :           *       *       *       *       *
+```
+
+## Supported tunings:
+```
+eadgbe, dropd, doubledropd, dadgad, dgcdcg, openc6, eeeebe, opend, opene, openg, opena, openc
 ```
