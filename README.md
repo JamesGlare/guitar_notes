@@ -7,6 +7,7 @@ With the `--scale` or `-s` option, `guitarnotes` will print a scale or mode to t
 `Syntax: guitarnotes -s <root> <scale_name> -t <tuning_name>`
 
 *Example with default tuning*:
+
 $guitarnotes --scale g major
 ```
 G       Am      Bm      C       D       Em      F#dim   G
@@ -25,6 +26,7 @@ G       Am      Bm      C       D       Em      F#dim   G
 ```
 
 *Example with default tuning*:
+
 $guitarnotes -s c dorian
 
 ```
@@ -68,6 +70,7 @@ This is useful for quick lookup of notes that correspond to fret positions or to
 `Syntax: guitarnotes -n <fret_positions> -t <tuning_name>`
 
 *Example (A-minor-7 chord) with standard tuning*:
+
 $guitarnotes -n a0 d2 g0 b1 e3
 ```
 Notes: A E G C G
@@ -86,6 +89,7 @@ Chord: Am7
 ```
 
 *Example (D-sus2 chord) in dgc-dcg tuning*:
+
 $guitarnotes -n d0 g2 c4 d0  -t dgcdcg
 ```
 Notes: D A E D
@@ -99,6 +103,38 @@ Chord: Dsus2
    |  -   D   -   e   -   -   -   -   a   -   -   -   -   D   -   e   -   -   -   -   a   -   -
    |  -   a   -   -   -   -   D   -   e   -   -   -   -   a   -   -   -   -   D   -   e   -   -
  D |  -   e   -   -   -   -   a   -   -   -   -   D   -   e   -   -   -   -   a   -   -   -   -
+
+              *       *       *       *           :           *       *       *       *       *
+```
+
+## Print all positions of a particular note (useful for note training)
+*Example in default tuning:* 
+
+$guitarnotes --all c#
+```
+      1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
+
+   |  -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -
+   |  -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -
+   |  -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -
+   |  -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#
+   |  -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -
+   |  -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -
+
+              *       *       *       *           :           *       *       *       *       *
+```
+*Example in openC tuning:*
+
+$guitarnotes --all c# --tuning openc
+```
+      1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
+
+   |  -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -
+   |  C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -
+   |  -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -
+   |  C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -
+   |  -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -
+   |  C#  -   -   -   -   -   -   -   -   -   -   -   C#  -   -   -   -   -   -   -   -   -   -
 
               *       *       *       *           :           *       *       *       *       *
 ```
