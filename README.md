@@ -1,5 +1,5 @@
 # Guitarnotes
-Command line program that helps to visualise guitar chords, notes, and scales.
+Command line program that helps to visualise or identify guitar chords, notes, and scales.
 
 ## Print arbitrary scales or modes for 12 different tunings
 With the `--scale` or `-s` option, `guitarnotes` will print a scale or mode to the command line and output the chords in this scale (first line of ouput).
