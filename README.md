@@ -1,4 +1,5 @@
-# Guitarnotes
+[![Build Status](https://travis-ci.com/JamesGlare/guitar_notes.svg?branch=main)](https://travis-ci.com/JamesGlare/guitar_notes)
+# Guitarnotes 
 Command line program that helps to visualise or identify guitar chords, notes, and scales.
 
 ## Print arbitrary scales or modes for 12 different tunings
