@@ -7,3 +7,7 @@ jobs:
     - rust: nightly
   fast_finish: true
 cache: cargo
+os:
+  - osx
+  - linux
+  - windows
