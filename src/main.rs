@@ -31,6 +31,13 @@ fn main() {
                                     .help("Set a guitar tuning different from EADGBE: {DROPD,...}")
                                     .global(true)
                                     .default_value("eadgbe"))
+                                .arg(Arg::with_name("relative")
+                                    .short("r")
+                                    .long("relative")
+                                    .help("Print fretboard in relative intervals (minor 3rd, ...).")
+                                    .global(true)
+                                    .takes_value(false)
+                                    )
                                 .get_matches();
     // See if the user set a tuning
     let opt_tuning =
@@ -118,11 +125,12 @@ fn main() {
     }
     match matches.values_of("scale") {
         Some(mut vals) => {
+            let relative = matches.is_present("relative");
             let fret_numbers = guitar_note::print_fret_numbers();
             let fret_markers = guitar_note::print_fret_markers();
             let scale_name = &vals.nth(0).unwrap().to_lowercase()[..];
             let root_name = &vals.nth(0).unwrap().to_lowercase()[..];
-            if let Some(result) = guitar_note::scale_on_fretboard(scale_name, root_name, &tuning) {
+            if let Some(result) = guitar_note::scale_on_fretboard(scale_name, root_name, &tuning, relative) {
                 println!("{}", result.2);
                 println!("{}", result.1);
                 print!("\n");
@@ -132,7 +140,7 @@ fn main() {
                 print!("\n");
                 println!("{}", fret_markers);
             } else if let Some(result) =
-                guitar_note::scale_on_fretboard(root_name, scale_name, &tuning)
+                guitar_note::scale_on_fretboard(root_name, scale_name, &tuning, relative)
             {
                 println!("{}", result.2);
                 println!("{}", result.1);
