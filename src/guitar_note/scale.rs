@@ -126,6 +126,9 @@ impl Scale {
         }
         return chord_names;
     }
+    pub fn note_to_degree(root: &Note, diff: &Note) -> &'static str {
+        return Scale::DEGREE[((*diff - *root).regauge_if_negative().semitones % 12) as usize];
+    }
     pub fn degrees_in_scale<'a>(&'a self) -> impl Iterator<Item = &'a str> {
         let root_semitone = self.root().clone().semitones;
 

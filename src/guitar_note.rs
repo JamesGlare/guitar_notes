@@ -96,6 +96,7 @@ pub mod guitar_note {
     pub fn chord_from_tab_notation(
         note_str: &Vec<String>,
         tuning: &Tuning,
+        relative: bool
     ) -> (Vec<Option<String>>, String) {
         let notes = parse_tab_notation(note_str, tuning);
         let chords = Chord::find_chord(&notes);
@@ -116,6 +117,7 @@ pub mod guitar_note {
                 &notes,
                 &tuning,
                 chord.get_notes().first().unwrap(),
+                relative
             )),
             None => String::from(""),
         };
@@ -125,6 +127,7 @@ pub mod guitar_note {
         scale_name: &str,
         root: &str,
         tuning: &Tuning,
+        relative: bool
     ) -> Option<(String, String, String)> {
         // Interface
         let opt_root = Note::from_string(root);
@@ -136,6 +139,7 @@ pub mod guitar_note {
                     scale.get_notes(),
                     &tuning,
                     scale.get_notes().first().unwrap(),
+                    relative
                 );
                 let fretboard = join_strings(&mut strings);
 
@@ -167,6 +171,7 @@ pub mod guitar_note {
             &vec![note],
             &tuning,
             &note,
+            false
         )));
     }
     pub fn print_fret_numbers() -> String {
@@ -186,7 +191,7 @@ pub mod guitar_note {
         .join("  ");
         return " ".to_owned() + &fret_markers;
     }
-    fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning, root: &Note) -> Vec<String> {
+    fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning, root: &Note, relative: bool) -> Vec<String> {
         let mut result: Vec<String> = vec![];
         let root_str = root.to_string();
         let capitalize_if_root = |s: &str| {
@@ -196,13 +201,20 @@ pub mod guitar_note {
                 s.to_owned()
             }
         };
+        let print_note = |base_note: &Note, note: &Note, relative: bool | {
+            if relative {
+                return Scale::note_to_degree(root, &(*base_note + *note)).to_owned();
+            } else{
+                return capitalize_if_root((*base_note + *note).to_string());
+            }
+        };
         for base_note in tuning.get_basenotes().iter() {
             // for each string on guitar
             let frets = locate_on_string(notes, base_note);
             let mut nut_string = String::from("");
 
             if let Some(note) = frets[0] {
-                let note_str = capitalize_if_root((*base_note + note).to_string());
+                let note_str = print_note(base_note, &note, relative);
                 nut_string = format!(" {}|", pad_to_length(&note_str));
             } else {
                 nut_string += "   |";
@@ -211,7 +223,7 @@ pub mod guitar_note {
 
             for f in frets.iter().skip(1) {
                 if let Some(note) = f {
-                    let mut note_string = capitalize_if_root((*base_note + *note).to_string());
+                    let mut note_string = print_note(base_note, note, relative);
                     note_string = pad_to_length(&note_string);
                     fret_strings.push(note_string);
                 } else {
@@ -261,7 +273,15 @@ pub mod guitar_note {
         let scale_name = "major_blues";
         let root = "a";
         let tuning = Tuning::from_name("eadgbe").unwrap();
-        let opt_result = scale_on_fretboard(scale_name, root, &tuning);
+        let opt_result = scale_on_fretboard(scale_name, root, &tuning, false);
+        if let Some(result) = opt_result {
+            println!("{}", result.2);
+            println!("{}", result.1);
+            println!("{}", result.0);
+        } else {
+            panic!("Something went wrong");
+        }
+        let opt_result = scale_on_fretboard(scale_name, root, &tuning, true);
         if let Some(result) = opt_result {
             println!("{}", result.2);
             println!("{}", result.1);
