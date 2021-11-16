@@ -96,6 +96,7 @@ pub mod guitar_note {
     pub fn chord_from_tab_notation(
         note_str: &Vec<String>,
         tuning: &Tuning,
+        relative: bool
     ) -> (Vec<Option<String>>, String) {
         let notes = parse_tab_notation(note_str, tuning);
         let chords = Chord::find_chord(&notes);
@@ -116,7 +117,7 @@ pub mod guitar_note {
                 &notes,
                 &tuning,
                 chord.get_notes().first().unwrap(),
-                false
+                relative
             )),
             None => String::from(""),
         };

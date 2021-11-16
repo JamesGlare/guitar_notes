@@ -68,7 +68,7 @@ fn main() {
     match matches.values_of("note") {
         Some(note_str) => {
             print!("Notes: ");
-
+            let relative = matches.is_present("relative");
             let notes = note_str.map(|s| s.to_lowercase()).collect::<Vec<_>>();
             let note_results = guitar_note::from_tab_notation(&notes, &tuning);
             if let Some(results) = note_results {
@@ -76,7 +76,7 @@ fn main() {
                 let fret_numbers = guitar_note::print_fret_numbers();
                 let fret_markers = guitar_note::print_fret_markers();
                 let (chord_strings, fretboard) =
-                    guitar_note::chord_from_tab_notation(&notes, &tuning);
+                    guitar_note::chord_from_tab_notation(&notes, &tuning, relative);
 
                 if chord_strings.is_empty() || chord_strings.iter().all(|s| s.is_none()) {
                     println!("This is not a chord that I know.");
