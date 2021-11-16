@@ -67,6 +67,26 @@ a       c       d       d#      e       g       a
               *       *       *       *           :           *       *       *       *       *
 ```
 
+*Example of the relative-semitone view*:
+Note the ```-r``` option.
+
+$guitarnotes -s A mixolydian -t dropD -r
+```
+A       Bm      C#dim   D       Em      F#m     G       A
+1       2       3       4       5       6       7b      8
+
+      1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
+
+ 5 |  -   6   7b  -   1   -   2   -   3   4   -   5   -   6   7b  -   1   -   2   -   3   4   -
+ 2 |  -   3   4   -   5   -   6   7b  -   1   -   2   -   3   4   -   5   -   6   7b  -   1   -
+ 7b|  -   1   -   2   -   3   4   -   5   -   6   7b  -   1   -   2   -   3   4   -   5   -   6
+ 4 |  -   5   -   6   7b  -   1   -   2   -   3   4   -   5   -   6   7b  -   1   -   2   -   3
+ 1 |  -   2   -   3   4   -   5   -   6   7b  -   1   -   2   -   3   4   -   5   -   6   7b  -
+ 5 |  -   4   -   3b  2   -   1   -   2   -   3   4   -   5   -   6   7b  -   1   -   2   -   3
+
+              *       *       *       *           :           *       *       *       *       *
+```
+
 ## Find the notes and the name of the corresponding chord (incl. inversions) from a fret constellation
 With `--note` or `-n` option and up to six fret positions (e.g. `A3` or `D12`), guitarnotes will return the corresponding notes as well as the chord, and its inversions.
 This is useful for quick lookup of notes that correspond to fret positions or to identify chords and their inversions.
