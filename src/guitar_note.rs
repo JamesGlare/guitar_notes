@@ -92,11 +92,11 @@ pub mod guitar_note {
     pub fn parse_tuning(tuning_name: &str) -> Option<Tuning> {
         return Tuning::from_name(tuning_name);
     }
-    
+
     pub fn chord_from_tab_notation(
         note_str: &Vec<String>,
         tuning: &Tuning,
-        relative: bool
+        relative: bool,
     ) -> (Vec<Option<String>>, String) {
         let notes = parse_tab_notation(note_str, tuning);
         let chords = Chord::find_chord(&notes);
@@ -117,7 +117,7 @@ pub mod guitar_note {
                 &notes,
                 &tuning,
                 chord.get_notes().first().unwrap(),
-                relative
+                relative,
             )),
             None => String::from(""),
         };
@@ -127,7 +127,7 @@ pub mod guitar_note {
         scale_name: &str,
         root: &str,
         tuning: &Tuning,
-        relative: bool
+        relative: bool,
     ) -> Option<(String, String, String)> {
         // Interface
         let opt_root = Note::from_string(root);
@@ -139,7 +139,7 @@ pub mod guitar_note {
                     scale.get_notes(),
                     &tuning,
                     scale.get_notes().first().unwrap(),
-                    relative
+                    relative,
                 );
                 let fretboard = join_strings(&mut strings);
 
@@ -147,9 +147,10 @@ pub mod guitar_note {
                 let chords = scale.chords_in_scale().join("\t");
                 let notes = scale.notes_in_scale().collect::<Vec<_>>().join("\t");
                 return match scale.scale_type {
-                    ScaleType::major_blues | ScaleType::minor_blues => {
-                        Some((fretboard, degrees, notes))
-                    }
+                    ScaleType::major_blues
+                    | ScaleType::minor_blues
+                    | ScaleType::major_pentatonic
+                    | ScaleType::minor_pentatonic => Some((fretboard, degrees, notes)),
                     _ => Some((fretboard, degrees, chords)),
                 };
             }
@@ -171,7 +172,7 @@ pub mod guitar_note {
             &vec![note],
             &tuning,
             &note,
-            false
+            false,
         )));
     }
     pub fn print_fret_numbers() -> String {
@@ -191,7 +192,12 @@ pub mod guitar_note {
         .join("  ");
         return " ".to_owned() + &fret_markers;
     }
-    fn layout_on_fretboard(notes: &Vec<Note>, tuning: &Tuning, root: &Note, relative: bool) -> Vec<String> {
+    fn layout_on_fretboard(
+        notes: &Vec<Note>,
+        tuning: &Tuning,
+        root: &Note,
+        relative: bool,
+    ) -> Vec<String> {
         let mut result: Vec<String> = vec![];
         let root_str = root.to_string();
         let capitalize_if_root = |s: &str| {
@@ -201,10 +207,10 @@ pub mod guitar_note {
                 s.to_owned()
             }
         };
-        let print_note = |base_note: &Note, note: &Note, relative: bool | {
+        let print_note = |base_note: &Note, note: &Note, relative: bool| {
             if relative {
                 return Scale::note_to_degree(root, &(*base_note + *note)).to_owned();
-            } else{
+            } else {
                 return capitalize_if_root((*base_note + *note).to_string());
             }
         };
