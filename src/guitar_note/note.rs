@@ -8,6 +8,25 @@ impl Note {
     pub const NAMES: [&'static str; 12] = [
         "c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b",
     ];
+    /// Try to parse a string to semitone
+    ///
+    pub fn from_string(name: &str) -> Option<Note> {
+        match name {
+            "c" => Some(Note { semitones: 0 }),
+            "c#" | "db" => Some(Note { semitones: 1 }),
+            "d" => Some(Note { semitones: 2 }),
+            "d#" | "eb" => Some(Note { semitones: 3 }),
+            "e" => Some(Note { semitones: 4 }),
+            "f" => Some(Note { semitones: 5 }),
+            "f#" | "gb" => Some(Note { semitones: 6 }),
+            "g" => Some(Note { semitones: 7 }),
+            "g#" | "ab" => Some(Note { semitones: 8 }),
+            "a" => Some(Note { semitones: 9 }),
+            "a#" | "bb" => Some(Note { semitones: 10 }),
+            "b" => Some(Note { semitones: 11 }),
+            _ => None,
+        }
+    }
 
     pub fn octave() -> Note {
         return Note { semitones: 12 };
@@ -33,16 +52,6 @@ impl Note {
          */
         let st = (self.semitones % 12).abs();
         return Note::NAMES[st as usize];
-    }
-
-    pub fn from_string(note_str: &str) -> Option<Note> {
-        let opt_semitone = Note::NAMES.iter().position(|&i| note_str == i);
-        return match opt_semitone {
-            Some(semitone) => Some(Note {
-                semitones: semitone as i32,
-            }),
-            None => None,
-        };
     }
 }
 

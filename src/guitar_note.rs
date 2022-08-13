@@ -166,13 +166,13 @@ pub mod guitar_note {
             return format!("{}", cifar);
         }
     }
-    pub fn all_notes_on_fretboard(note_name: &str, tuning: &Tuning) -> Option<String> {
-        let note = Note::from_string(note_name)?;
+    pub fn all_notes_on_fretboard(note_names: &Vec<String>, tuning: &Tuning) -> Option<String> {
+        let notes = note_names
+            .iter()
+            .filter_map(|note_str| Note::from_string(note_str))
+            .collect::<Vec<Note>>();
         return Some(join_strings(&mut layout_on_fretboard(
-            &vec![note],
-            &tuning,
-            &note,
-            false,
+            &notes, &tuning, &notes[0], false,
         )));
     }
     pub fn print_fret_numbers() -> String {
