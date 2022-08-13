@@ -22,8 +22,9 @@ fn main() {
                                      .number_of_values(2) )
                                 .arg(Arg::with_name("all_notes")
                                     .short("a")
+                                    .multiple(true)
                                     .long("all")
-                                    .help("Print all positions of the note given on the fretboard.")
+                                    .help("Print all positions of all notes given on the fretboard.")
                                     .takes_value(true))
                                 .arg(Arg::with_name("tuning")
                                     .short("t")
@@ -105,12 +106,12 @@ fn main() {
         }
         None => {}
     }
-    match matches.value_of("all_notes") {
-        Some(note_name) => {
+    match matches.values_of("all_notes") {
+        Some(note_names) => {
             let fret_numbers = guitar_note::print_fret_numbers();
             let fret_markers = guitar_note::print_fret_markers();
-            let opt_fretboard =
-                guitar_note::all_notes_on_fretboard(&note_name.to_lowercase()[..], &tuning);
+            let notes = note_names.map(|s| s.to_lowercase()).collect::<Vec<_>>();
+            let opt_fretboard = guitar_note::all_notes_on_fretboard(&notes, &tuning);
             if let Some(fretboard) = opt_fretboard {
                 println!("{}", fret_numbers);
                 print!("\n");
@@ -130,7 +131,9 @@ fn main() {
             let fret_markers = guitar_note::print_fret_markers();
             let scale_name = &vals.nth(0).unwrap().to_lowercase()[..];
             let root_name = &vals.nth(0).unwrap().to_lowercase()[..];
-            if let Some(result) = guitar_note::scale_on_fretboard(scale_name, root_name, &tuning, relative) {
+            if let Some(result) =
+                guitar_note::scale_on_fretboard(scale_name, root_name, &tuning, relative)
+            {
                 println!("{}", result.2);
                 println!("{}", result.1);
                 print!("\n");
